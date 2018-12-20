@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 3.0)
 
+# required to be able to link libraries into shared libraries or PIEs
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 file(GLOB HEADERS ${PROJECT_SOURCE_DIR}/include/linuxdeploy/desktopfile/*.h)
 
-add_library(linuxdeploy_desktopfile STATIC
+add_library(_linuxdeploy_desktopfile_objs OBJECT
     desktopfile.cpp
     desktopfileentry.cpp
     desktopfilereader.cpp
@@ -13,4 +16,11 @@ add_library(linuxdeploy_desktopfile STATIC
     ${HEADERS}
 )
 
-target_include_directories(linuxdeploy_desktopfile PUBLIC ${PROJECT_SOURCE_DIR}/include)
+add_library(linuxdeploy_desktopfile SHARED $<TARGET_OBJECTS:_linuxdeploy_desktopfile_objs>)
+
+add_library(linuxdeploy_desktopfile_static STATIC $<TARGET_OBJECTS:_linuxdeploy_desktopfile_objs>)
+
+# needs to be included in all three targets
+foreach(target linuxdeploy_desktopfile linuxdeploy_desktopfile_static _linuxdeploy_desktopfile_objs)
+    target_include_directories(${target} PUBLIC ${PROJECT_SOURCE_DIR}/include)
+endforeach()
