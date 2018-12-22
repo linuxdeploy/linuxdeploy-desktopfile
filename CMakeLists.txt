@@ -23,21 +23,25 @@ endif()
 
 set(ENABLE_COVERAGE OFF CACHE BOOL "Enable coverage measurements")
 if(ENABLE_COVERAGE)
-    include(CodeCoverage)
-    message(WARNING "Enabling code coverage measurements -> disables optimizations and embeds debug information!")
+    if(TARGET coverage)
+        message(WARNING "Found another target coverage, not setting up coverage for linuxdeploy-desktopfile")
+    else()
+        include(CodeCoverage)
+        message(WARNING "Enabling code coverage measurements -> disables optimizations and embeds debug information!")
 
-    append_coverage_compiler_flags()
+        append_coverage_compiler_flags()
 
-    set(COVERAGE_GCOVR_EXCLUDES ${PROJECT_SOURCE_DIR}/lib ${PROJECT_BINARY_DIR})
+        set(COVERAGE_GCOVR_EXCLUDES ${PROJECT_SOURCE_DIR}/lib ${PROJECT_BINARY_DIR})
 
-    include(ProcessorCount)
-    ProcessorCount(processor_count)
+        include(ProcessorCount)
+        ProcessorCount(processor_count)
 
-    set(command cmake --build . --target all -- -j ${processor_count} && ctest -V)
+        set(command cmake --build . --target all -- -j ${processor_count} && ctest -V)
 
-    setup_target_for_coverage_gcovr_html(NAME coverage EXECUTABLE "${command}")
-    setup_target_for_coverage_gcovr_xml(NAME coverage_xml EXECUTABLE "${command}")
-    setup_target_for_coverage_gcovr_text(NAME coverage_text EXECUTABLE "${command}")
+        setup_target_for_coverage_gcovr_html(NAME coverage EXECUTABLE "${command}")
+        setup_target_for_coverage_gcovr_xml(NAME coverage_xml EXECUTABLE "${command}")
+        setup_target_for_coverage_gcovr_text(NAME coverage_text EXECUTABLE "${command}")
+    endif()
 endif()
 
 add_subdirectory(lib)
