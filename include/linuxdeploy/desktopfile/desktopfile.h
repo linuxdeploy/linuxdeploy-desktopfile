@@ -104,10 +104,6 @@ namespace linuxdeploy {
                 // returns true if an existing key was overwritten, false otherwise
                 bool setEntry(const std::string& section, DesktopFileEntry&& entry);
 
-                // create common application entries in desktop file
-                // returns false if one of the keys exists and was left unmodified
-//                bool addDefaultKeys(const std::string& executableFileName);
-
                 // validate desktop file
                 bool validate() const;
         };

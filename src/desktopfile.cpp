@@ -164,36 +164,6 @@ namespace linuxdeploy {
             return true;
         }
 
-//       bool DesktopFile::addDefaultKeys(const std::string& executableFileName) {
-//           ldLog() << "Adding default values to desktop file:" << path() << std::endl;
-//
-//           auto rv = true;
-//
-//           auto setDefault = [&rv, this](const std::string& section, const std::string& key, const std::string& value) {
-//               if (entryExists(section, key)) {
-//                   DesktopFileEntry entry;
-//
-//                   // this should never return false
-//                   auto entryExists = getEntry(section, key, entry);
-//                   assert(entryExists);
-//
-//                   ldLog() << LD_WARNING << "Key exists, not modified:" << key << "(current value:" << entry.value() << LD_NO_SPACE << ")" << std::endl;
-//                   rv = false;
-//               } else {
-//                   auto entryOverwritten = setEntry(section, DesktopFileEntry(key, value));
-//                   assert(!entryOverwritten);
-//               }
-//           };
-//
-//           setDefault("Desktop Entry", "Name", executableFileName);
-//           setDefault("Desktop Entry", "Exec", executableFileName);
-//           setDefault("Desktop Entry", "Icon", executableFileName);
-//           setDefault("Desktop Entry", "Type", "Application");
-//           setDefault("Desktop Entry", "Categories", "Utility;");
-//
-//           return rv;
-//       }
-
         bool DesktopFile::validate() const {
             // FIXME: call desktop-file-validate
             return true;
