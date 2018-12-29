@@ -46,6 +46,9 @@ namespace linuxdeploy {
             // return entry's value
             const std::string& value() const;
 
+            // sets a new value
+            void setValue(const std::string& value);
+
         public:
             // convert value to integer
             // throws BadLexicalCastError in case of type errors

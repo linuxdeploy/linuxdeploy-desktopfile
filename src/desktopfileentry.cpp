@@ -115,5 +115,9 @@ namespace linuxdeploy {
 
             return list;
         }
+
+        void DesktopFileEntry::setValue(const std::string& value) {
+            d->value = value;
+        }
     }
 }
