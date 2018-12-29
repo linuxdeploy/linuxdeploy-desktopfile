@@ -12,6 +12,7 @@ add_library(_linuxdeploy_desktopfile_objs OBJECT
     desktopfilereader.h
     desktopfilewriter.cpp
     desktopfilewriter.h
+    desktopexecentrytokenizer.cpp
     util.h
     ${HEADERS}
 )

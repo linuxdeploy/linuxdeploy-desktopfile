@@ -7,6 +7,7 @@ add_executable(test_desktopfile
     test_desktopfilereader.cpp
     test_desktopfilewriter.cpp
     test_desktopfile_conformance.cpp
+    test_desktopexecentrytokenizer.cpp
     main.cpp
 )
 
