@@ -92,35 +92,60 @@ namespace linuxdeploy {
                                 if (key.empty())
                                     throw ParseError("Empty keys are not allowed");
 
-                                // keys may only contain A-Za-z- characters according to specification
-                                for (const char c : key) {
+                                // check if the string is a potentially localized string
+                                // if yes, parse name and locale out, and check them for validity
+                                std::string entryName, entryLocale;
+
+                                auto openingBracketPos = key.find('[');
+                                if (openingBracketPos != std::string::npos) {
+                                    entryName = key.substr(0, key.find('['));
+                                    entryLocale = key.substr(openingBracketPos, key.size());
+                                } else {
+                                    entryName = key;
+                                }
+
+                                // name may only contain A-Za-z- characters according to specification
+                                for (const char c : entryName) {
                                     if (!(
                                             (c >= 'A' && c <= 'Z') ||
                                             (c >= 'a' && c <= 'z') ||
                                             (c >= '0' && c <= '9') ||
-                                            (c == '-') ||
-                                            // FIXME: remove this hack after introducing localization support to
-                                            // conform to desktop file spec again
-                                            (c == '[') || (c == ']')
+                                            (c == '-')
                                         )
                                     ) {
-                                        throw ParseError(
-                                        "Key " + key + " contains invalid character " + std::string{c}
-                                        );
+                                        throw ParseError("Key " + key + " contains invalid character " + std::string{c});
                                     }
                                 }
 
-                                if (std::count(key.begin(), key.end(), '[') > 1 ||
-                                    std::count(key.begin(), key.end(), ']') > 1 ||
-                                    // make sure that both [ and ] are present
-                                    (key.find('[') != std::string::npos && key.find(']') == std::string::npos) ||
-                                    (key.find('[') == std::string::npos && key.find(']') != std::string::npos) ||
-                                    // disallow empty locale names
-                                    (key.find('[') != std::string::npos && key.find(']') != std::string::npos && (key.find(']') - key.find('[')) < 2) ||
-                                    // ensure order of [ and ]
-                                    (key.find('[') != std::string::npos && key.find('[' ) > key.find(']'))
-                                ) {
-                                    throw ParseError("Invalid localization syntax used in key " + key);
+                                // validate locale part
+                                if (!entryLocale.empty()) {
+                                    static const auto errorPrefix = "Invalid localization syntax used in key " + key + ": ";
+
+                                    if (std::count(entryLocale.begin(), entryLocale.end(), '[') != 1 ||
+                                        std::count(entryLocale.begin(), entryLocale.end(), '[') != 1) {
+                                        throw ParseError(errorPrefix + "mismatching [] brackets");
+                                    }
+
+                                    // just for clarification: _this_ should never happen, given how the strings are
+                                    // split above
+                                    if (entryLocale.find('[') != 0) {
+                                        throw ParseError(errorPrefix + "invalid [ position");
+                                    }
+
+                                    if (entryLocale.find(']') != entryLocale.size()-1) {
+                                        throw ParseError(errorPrefix + "invalid ] position");
+                                    }
+
+                                    // locale may only contain A-Za-z- characters according to specification
+                                    for (const char c : entryName) {
+                                        if (!(
+                                            (c >= 'A' && c <= 'Z') ||
+                                            (c >= 'a' && c <= 'z') ||
+                                            (c == '_') || (c == '@')
+                                        )) {
+                                            throw ParseError("Key " + key + " contains invalid character " + std::string{c});
+                                        }
+                                    }
                                 }
 
                                 auto& section = sections[currentSectionName];
