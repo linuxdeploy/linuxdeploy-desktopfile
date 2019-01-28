@@ -92,7 +92,7 @@ TEST_F(DesktopFileWriterTest, testSerialization) {
     };
 
     DesktopFile::sections_t data = {
-        {"Desktop File", section},
+        {"Desktop Entry", section},
     };
 
     DesktopFileWriter writer(data);
@@ -102,5 +102,5 @@ TEST_F(DesktopFileWriterTest, testSerialization) {
     writer.save(ss);
 
     DesktopFileReader reader(ss);
-    EXPECT_EQ(reader["Desktop File"], section);
+    EXPECT_EQ(reader["Desktop Entry"], section);
 }

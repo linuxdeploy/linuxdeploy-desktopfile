@@ -132,7 +132,7 @@ TEST_F(DesktopFileReaderTest, testMoveAssignmentConstructor) {
 
 TEST_F(DesktopFileReaderTest, testParseSimpleDesktopFile) {
     std::stringstream ss;
-    ss << "[Desktop File]" << std::endl
+    ss << "[Desktop Entry]" << std::endl
        << "Version=1.0" << std::endl
        << "Name=name" << std::endl
        << "Exec=exec" << std::endl
@@ -143,7 +143,7 @@ TEST_F(DesktopFileReaderTest, testParseSimpleDesktopFile) {
     DesktopFileReader reader;
     reader = DesktopFileReader(ss);
 
-    auto section = reader["Desktop File"];
+    auto section = reader["Desktop Entry"];
     EXPECT_FALSE(section.empty());
     EXPECT_EQ(section.size(), 6);
 
@@ -158,7 +158,7 @@ TEST_F(DesktopFileReaderTest, testParseSimpleDesktopFile) {
 
 TEST_F(DesktopFileReaderTest, testParseSimpleDesktopFileWithComments) {
     std::stringstream ss;
-    ss << "[Desktop File]" << std::endl
+    ss << "[Desktop Entry]" << std::endl
        << "Version=1.0" << std::endl
        << "Name=name" << std::endl
        << "# a comment" << std::endl
@@ -171,7 +171,7 @@ TEST_F(DesktopFileReaderTest, testParseSimpleDesktopFileWithComments) {
     DesktopFileReader reader;
     reader = DesktopFileReader(ss);
 
-    auto section = reader["Desktop File"];
+    auto section = reader["Desktop Entry"];
     EXPECT_FALSE(section.empty());
     EXPECT_EQ(section.size(), 6);
 
@@ -189,7 +189,7 @@ TEST_F(DesktopFileReaderTest, testParseSimpleDesktopFileWithComments) {
 
 TEST_F(DesktopFileReaderTest, testParseFileGetNonExistingSection) {
     std::stringstream ss;
-    ss << "[Desktop File]" << std::endl;
+    ss << "[Desktop Entry]" << std::endl;
 
     DesktopFileReader reader;
     reader = DesktopFileReader(ss);
@@ -211,7 +211,7 @@ TEST_F(DesktopFileReaderTest, testParseFileMissingSectionHeader) {
 
 TEST_F(DesktopFileReaderTest, testParseFileEmptyKey) {
     std::stringstream ss;
-    ss << "[Desktop File]" << std::endl
+    ss << "[Desktop Entry]" << std::endl
        << "=name" << std::endl
        << "Exec=exec" << std::endl
        << "Icon=icon" << std::endl
@@ -224,7 +224,7 @@ TEST_F(DesktopFileReaderTest, testParseFileEmptyKey) {
 TEST_F(DesktopFileReaderTest, testParseFileMissingDelimiterInLine) {
     {
         std::stringstream ss;
-        ss << "[Desktop File]" << std::endl
+        ss << "[Desktop Entry]" << std::endl
            << "Exec" << std::endl;
 
         DesktopFileReader reader;
@@ -233,7 +233,7 @@ TEST_F(DesktopFileReaderTest, testParseFileMissingDelimiterInLine) {
 
     {
         std::stringstream ss;
-        ss << "[Desktop File]" << std::endl
+        ss << "[Desktop Entry]" << std::endl
            << "Name name" << std::endl;
 
         DesktopFileReader reader;
@@ -243,7 +243,7 @@ TEST_F(DesktopFileReaderTest, testParseFileMissingDelimiterInLine) {
 
 TEST_F(DesktopFileReaderTest, testParseFile) {
     std::stringstream ss;
-    ss << "[Desktop File]" << std::endl
+    ss << "[Desktop Entry]" << std::endl
        << "Name name" << std::endl
        << "Exec" << std::endl;
 
@@ -254,7 +254,7 @@ TEST_F(DesktopFileReaderTest, testParseFile) {
 TEST_F(DesktopFileReaderTest, testParseFileMultipleDelimitersInLine) {
     // TODO: verify that ==Name would be a legal value according to desktop file specification
     std::stringstream ss;
-    ss << "[Desktop File]" << std::endl
+    ss << "[Desktop Entry]" << std::endl
        << "Name===name" << std::endl;
 
     DesktopFileReader reader;
@@ -263,13 +263,13 @@ TEST_F(DesktopFileReaderTest, testParseFileMultipleDelimitersInLine) {
 
 TEST_F(DesktopFileReaderTest, testParseFileWithLeadingAndTrailingWhitespaceInLines) {
     std::stringstream ss;
-    ss << "[Desktop File]" << std::endl
+    ss << "[Desktop Entry]" << std::endl
        << "Name= name" << std::endl
        << "Exec =exec" << std::endl;
 
     DesktopFileReader reader(ss);
 
-    auto section = reader["Desktop File"];
+    auto section = reader["Desktop Entry"];
     EXPECT_FALSE(section.empty());
 
     EXPECT_EQ(section["Name"].value(), "name");
@@ -278,13 +278,13 @@ TEST_F(DesktopFileReaderTest, testParseFileWithLeadingAndTrailingWhitespaceInLin
 
 TEST_F(DesktopFileReaderTest, testDataGetter) {
     std::stringstream ss;
-    ss << "[Desktop File]" << std::endl
+    ss << "[Desktop Entry]" << std::endl
        << "Name= name" << std::endl
        << "Exec =exec" << std::endl;
 
     DesktopFileReader reader(ss);
 
-    auto section = reader["Desktop File"];
+    auto section = reader["Desktop Entry"];
     EXPECT_FALSE(section.empty());
 
     auto data = reader.data();
@@ -294,17 +294,17 @@ TEST_F(DesktopFileReaderTest, testDataGetter) {
         {"Exec", DesktopFileEntry("Exec", "exec")},
     });
 
-    EXPECT_EQ(data["Desktop File"], expected);
+    EXPECT_EQ(data["Desktop Entry"], expected);
 }
 
 TEST_F(DesktopFileReaderTest, testParseLinesWithMultipleSpaces) {
     std::stringstream ss;
-    ss << "[Desktop File]" << std::endl
+    ss << "[Desktop Entry]" << std::endl
        << "Name= What a great  name    " << std::endl;
 
     DesktopFileReader reader(ss);
 
-    auto section = reader["Desktop File"];
+    auto section = reader["Desktop Entry"];
     EXPECT_FALSE(section.empty());
 
     EXPECT_EQ(section["Name"].value(), "What a great  name");
