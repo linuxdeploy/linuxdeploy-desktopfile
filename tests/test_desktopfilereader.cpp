@@ -391,27 +391,33 @@ TEST_F(DesktopFileReaderTest, testReadBrokenSectionMissingOpeningBracket) {
 
 // FIXME: introduce proper localization support
 TEST_F(DesktopFileReaderTest, testReadLocalizedEntriesWithoutProperLocalizationSupport) {
-    std::stringstream ss;
-    ss << "[Desktop File]" << std::endl
-       << "Name=name" << std::endl
-       << "Name[de]=name" << std::endl
-       << "Exec=exec" << std::endl;
+    // lang_COUNTRY.ENCODING@MODIFIER
+    // https://standards.freedesktop.org/desktop-entry-spec/latest/ar01s05.html
+    for (std::string locale : {"de", "de_DE", "ca@valencia", "de_DE.UTF-8"}) {
+        std::stringstream ss;
+        ss << "[Desktop Entry]" << std::endl
+           << "Name=name" << std::endl
+           << "Name[" << locale << "]=name" << std::endl
+           << "Exec=exec" << std::endl;
 
-    DesktopFileReader reader(ss);
+        DesktopFileReader reader;
 
-    auto section = reader["Desktop File"];
-    EXPECT_FALSE(section.empty());
+        EXPECT_NO_THROW(reader = DesktopFileReader(ss)) << "tested locale string: " << locale;
 
-    auto data = reader.data();
+        auto section = reader["Desktop Entry"];
+        EXPECT_FALSE(section.empty());
 
-    auto expected = DesktopFile::section_t({
-                                           {"Name", DesktopFileEntry("Name", "name")},
-                                           // FIXME: revise after introduction of localization support
-                                           {"Name[de]", DesktopFileEntry("Name[de]", "name")},
-                                           {"Exec", DesktopFileEntry("Exec", "exec")},
-                                           });
+        auto data = reader.data();
 
-    EXPECT_EQ(data["Desktop File"], expected);
+        auto expected = DesktopFile::section_t({
+            {"Name",     DesktopFileEntry("Name", "name")},
+            // FIXME: revise after introduction of localization support
+            {"Name[" + locale + "]", DesktopFileEntry("Name[" + locale + "]", "name")},
+            {"Exec",     DesktopFileEntry("Exec", "exec")},
+        });
+
+        EXPECT_EQ(data["Desktop Entry"], expected) << "tested locale string: " << locale;
+    }
 }
 
 TEST_F(DesktopFileReaderTest, testBrokenLocalizedKeys) {
