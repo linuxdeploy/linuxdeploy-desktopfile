@@ -23,7 +23,7 @@ jobs:
           submodules: recursive
 
       - name: Install dependencies
-        run: sudo pip3 install -y gcovr
+        run: sudo pip3 install gcovr
 
       - name: Test coverage
         run: bash -ex ci/test-coverage.sh
