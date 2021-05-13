@@ -429,3 +429,11 @@ TEST_F(DesktopFileReaderTest, testBrokenLocalizedKeys) {
         EXPECT_THROW(DesktopFileReader reader(ins), ParseError) << "key: " << key;
     }
 }
+
+TEST_F(DesktopFileReaderTest, testKeyWithDashesAndLocaleWithUnderscore) {
+    std::stringstream ins;
+    ins << "[Desktop Entry]" << std::endl
+        << "X-GNOME-FullName[fr_FR]=test" << std::endl;
+
+    EXPECT_NO_THROW(DesktopFileReader reader(ins));
+}
