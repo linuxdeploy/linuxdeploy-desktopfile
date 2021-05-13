@@ -21,8 +21,8 @@ cleanup () {
 trap cleanup EXIT
 
 # store repo root as variable
-REPO_ROOT=$(readlink -f $(dirname $(dirname $0)))
-OLD_CWD=$(readlink -f .)
+REPO_ROOT="$(readlink -f "$(dirname "$(dirname $0)")")"
+OLD_CWD="$(readlink -f .)"
 
 pushd "$BUILD_DIR"
 
@@ -38,4 +38,4 @@ fi
 cmake "$REPO_ROOT" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON "${EXTRA_CMAKE_ARGS[@]}"
 
 # build, run tests and show coverage report
-make -j$(nproc) coverage_text
+make -j"$(nproc)" coverage_text
