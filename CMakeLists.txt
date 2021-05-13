@@ -44,11 +44,13 @@ if(ENABLE_COVERAGE)
     endif()
 endif()
 
+include(CTest)
+
 add_subdirectory(lib)
 
 add_subdirectory(src)
 
-include(CTest)
 if(BUILD_TESTING)
+    enable_testing()
     add_subdirectory(tests)
 endif()
