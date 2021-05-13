@@ -26,7 +26,7 @@ jobs:
         run: sudo pip3 install gcovr
 
       - name: Install multiarch dependencies
-        if: matrix.ARCH == "i386"
+        if: matrix.ARCH == 'i386'
         run: sudo apt install -y gcc-multilib g++-multilib
 
       - name: Test coverage
