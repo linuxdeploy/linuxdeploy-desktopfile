@@ -136,50 +136,10 @@ namespace linuxdeploy {
                                         throw ParseError(errorPrefix + "invalid ] position");
                                     }
 
-                                    // splitting the locale into the three parts (of which only one is mandatory) is easier
-                                    // if we strip the surrounding brackets first
-                                    const auto innerPart = entryLocale.substr(1, entryLocale.size() - 2);
-
-                                    // will be std::string::npos if necessary
-                                    const auto stopPosition = innerPart.find('.');
-                                    const auto atPosition = innerPart.find('@');
-
-                                    auto langCountry = innerPart.substr(0, std::min(stopPosition, atPosition));
-                                    std::string encoding, modifier;
-
-                                    if (stopPosition != std::string::npos) {
-                                        encoding = innerPart.substr(stopPosition + 1, atPosition);
-                                    }
-                                    if (atPosition != std::string::npos) {
-                                        modifier = innerPart.substr(atPosition + 1);
-                                    }
-
-                                    // lang_COUNTRY may only contain A-Za-z- characters according to specification
-                                    for (const char c : langCountry) {
-                                        if (!(
-                                            (c >= 'A' && c <= 'Z') ||
-                                            (c >= 'a' && c <= 'z') ||
-                                            (c == '_')
-                                        )) {
-                                            throw ParseError("Locale " + key + " lang_COUNTRY contains invalid character " + std::string{c});
-                                        }
-                                    }
-
-                                    // encoding may only contain A-Za-z- characters according to specification
-                                    // if the encoding is empty, this loop is a no-op
-                                    for (const char c : encoding) {
-                                        if (!(
-                                            (c >= 'A' && c <= 'Z') ||
-                                            (c >= 'a' && c <= 'z') ||
-                                            (c >= '0' && c <= '9') ||
-                                            (c == '-')
-                                        )) {
-                                            throw ParseError("Locale " + key + " encoding contains invalid character " + std::string{c});
-                                        }
-                                    }
-
-                                    // TODO: test modifier properly
-                                    (void) modifier;
+                                    // the syntax within the brackets is not tested by intention, as some KDE apps
+                                    // use a locale called "x-test" for some reason
+                                    // strict validation of the locale part broke all AppImage builds on the KDE binary
+                                    // factory
                                 }
 
                                 auto& section = sections[currentSectionName];
