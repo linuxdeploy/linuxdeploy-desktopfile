@@ -46,7 +46,10 @@ endif()
 
 include(CTest)
 
-add_subdirectory(lib)
+if(BUILD_TESTING)
+    # including this before including lib/ makes sure that the top level project's gtest is used everywhere
+    include(${PROJECT_SOURCE_DIR}/lib/cmake-scripts/include-or-build-gtest.cmake)
+endif()
 
 add_subdirectory(src)
 
