@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.6)
 
 # required to be able to link libraries into shared libraries or PIEs
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
